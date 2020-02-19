@@ -198,3 +198,69 @@ nums x = case compare x 0 of
 
 -- Prelude> :t flip
 -- flip :: (a -> b -> c) -> b -> a -> c
+--           [   1   ]      [     2     ]
+-- 1 - function argument. note the parenthesis
+-- 2 - other arguments and result
+
+-- ====== Exercise: Artful dodgy ======
+
+dodgy x y = x + y * 10
+oneIsOne = dodgy 1
+oneIsTwo = (flip dodgy) 2
+
+dodgyTest = [
+  (dodgy 1 1) == 11,
+  (dodgy 2 2) == 22,
+  (dodgy 1 2) == 21,
+  (dodgy 2 1) == 12,
+  (oneIsOne 1) == 11,
+  (oneIsOne 2) == 21,
+  (oneIsTwo 1) == 21,
+  (oneIsTwo 2) == 22,
+  (oneIsOne 3) == 31,
+  (oneIsTwo 3) == 23
+  ]
+
+
+-- =============================
+-- Guards Blocks
+-- =============================
+  
+myAbs :: Integer -> Integer
+myAbs x
+--[1] [2]
+  | x < 0     = (-x)
+--[3] [4]    [5] [6]
+  | otherwise = x
+--  [7]
+
+-- 1 - function name
+-- 2 - parameter
+-- 3 - pipe | to begin a guard case
+-- 4 - expression to test if this branch should evaluate. must evaluate to Bool.
+-- 5 - denotes that we are declaring what expression to return if guard is true.
+-- 6 - expression to return. (if true)
+-- 7 - another name for True
+
+
+-- ====== Exercise: Guard Duty ======
+
+-- 1. What is the type of pal?
+-- 2. The following function returns?
+pal :: Eq a => [a] -> Bool -- answer 1
+pal xs
+  | xs == reverse xs = True
+  | otherwise        = False
+
+-- answer 2: True of palindrome
+palTest = pal "racecar"
+
+-- 3. the following function returns?
+-- 4. what is the type of numbers?
+numbers :: (Ord a, Num a, Num p) => a -> p
+numbers x
+  | x < 0 = -1
+  | x == 0 = 0
+  | x > 0 = 1
+
+-- answer 3: an indication of whether its argument is a positive ornegative number or zero
