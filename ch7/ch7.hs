@@ -2,9 +2,9 @@
 
 module Ch7 where
 
--- ====================
+-- =============================
 -- Anonymous functions
--- ====================
+-- =============================
 
 -- triple :: Integer -> Integer
 -- triple x = x * 3
@@ -60,11 +60,11 @@ mFlip f x y = f y x
 
 
 
--- ====================
+-- =============================
 -- Pattern matching
 -- can be used to unpack and expose content of data
 -- and specify behavior depending on data
--- ====================
+-- =============================
 
 isItTwo :: Integer -> Bool
 isItTwo 2 = True
@@ -264,3 +264,134 @@ numbers x
   | x > 0 = 1
 
 -- answer 3: an indication of whether its argument is a positive ornegative number or zero
+
+
+
+-- =============================
+-- Function Composition
+-- =============================
+-- (.) :: (b -> c) -> (a -> b) -> a -> c
+--        [1]         [2]     [3]  [4]
+-- 1. is a function from 𝑏 to 𝑐, passed as an argument (thus the parentheses).
+-- 2. is a function from 𝑎 to 𝑏.
+-- 3. is a value of type 𝑎, the same as [2] expects as an argument.
+-- 4. is a value of type 𝑐, the same as [1] returns as a result.
+
+-- Then with the addition of one set of parentheses:
+-- (.) :: (b -> c) -> (a -> b) -> (a -> c)
+--        [1]         [2]         [3]
+-- 1. given a function 𝑏 to 𝑐
+-- 2. given a function 𝑎 to 𝑏
+-- 3. return a function 𝑎 to 𝑐.
+
+testComp = negate . sum $ [1, 2, 3, 4, 5]
+-- evaluates like so
+-- negate . sum $ [1, 2, 3, 4, 5]
+-- negate (sum [1, 2, 3, 4, 5])
+-- negate (15)
+-- -15
+
+-- uses $ operator so that `negate . sum` will evaluate first instead `sum [1,2,3,4,5]`
+-- this happens because a normal function has precendence of 10 while (.) has 9 (sum has higher)
+-- you can also just use parenthesis
+
+
+
+-- =============================
+-- Pointfree style
+-- =============================
+-- Refers to composing functions without specifying their arguments
+
+-- let f = negate . sum
+-- f [1, 2, 3, 4, 5]
+-- -15
+
+
+-- =============================
+-- Demonstrating Composition
+-- =============================
+-- putStrLn :: String -> IO ()
+-- show :: Show a => a -> String
+
+-- here is composition of  print
+print :: Show a => a -> IO ()
+print = putStrLn . show
+
+
+
+-- =============================
+-- Chapter Exercise
+-- =============================
+{-|
+  1. A polymorphic function
+  Answer: d
+  a) changes things into sheep when invoked
+  b) has multiple arguments
+  c) has a concrete type
+  d) may resolve to values of different types, depending on inputs
+
+  2. Two functions named f and g have types Char -> String and String -> [String] respectively.
+     The composed function g . f has the type
+     Answer: b
+  a) Char -> String
+  b) Char -> [String]
+  c) [[String]]
+  d) Char -> String -> [String]
+  
+  3. A function f has the type Ord a => a -> a -> Bool and we apply it to one numeric value. 
+     What is the type now?
+     Answer: d
+  a) Ord a => a -> Bool 
+  b) Num -> Num -> Bool
+  c) Ord a => a -> a -> Integer
+  d) (Ord a, Num a) => a -> Bool
+
+  4. A function with the type (a -> b) -> c
+     Answer: b
+  a) requires values of three different types
+  b) is a higher-order function
+  c) must take a tuple as its first argument
+  d) has its parameters in alphabetical order
+
+  5. Given the following definition of f, what is the type of f True?
+     f :: a -> a 
+     f x = x
+     Answer: a
+  a) f True :: Bool
+  b) f True :: String
+  c) f True :: Bool -> Bool
+  d) f True :: a  
+-}
+
+{- Let's Write Code
+tensDigit :: Integral a => a -> a
+tensDigit x = d
+    where xLast = x `div`10
+          d     = xLast `mod` 10
+-}
+
+-- rewrite in divMod version
+tensDigit' x = d
+  where xLast = fst . divMod x $ 10
+        d     = snd . divMod xLast $ 10
+-- does the divMod version have the same type? - YES
+-- hundreds version
+hunsD x = d
+  where xLast = fst . divMod x $ 100
+        d     = snd . divMod xLast $ 10
+
+-- implement in case expression and guard
+-- foldBool :: a -> a -> Bool -> a
+-- foldBool =
+
+foldBoolC a b c = case c of
+  True -> a
+  otherwise -> b
+
+foldBoolG a b c
+  | c = a
+  | otherwise = b
+
+-- implement
+g :: (a -> b) -> (a, c) -> (b, c)
+g x (a, c) = (x a, c)
