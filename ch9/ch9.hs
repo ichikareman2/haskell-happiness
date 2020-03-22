@@ -43,7 +43,8 @@ myTail [1, 2, 3]
 -- [2, 3]
 
 -- Doesn't handle empty list.
--- if we try to pass them an empty list as an argument, they can’t pattern match:
+-- if we try to pass them an empty list as an argument, they can’t pattern 
+-- match:
 
 Prelude> myHead []
 *** Exception:
@@ -61,7 +62,8 @@ myTail [] = []
 myTail (_ :xs) = xs
 
 -- A better way is to use `Maybe` datatype (discussed fully in later chapter).
--- The idea is to make your failure case explicit. As programs get longer and more complex that can be quite useful.
+-- The idea is to make your failure case explicit. As programs get longer and 
+-- more complex that can be quite useful.
 
 Prelude> :info Maybe
 data Maybe a = Nothing | Just a
@@ -83,7 +85,8 @@ safeHead (x:_) = Just a
 -- =============================
 
 {-
-Haskell has some syntactic sugar to accommodate the use of lists, so that you can write:
+Haskell has some syntactic sugar to accommodate the use of lists, so that you
+can write:
 
 Prelude> [1, 2, 3] ++ [4]
 [1, 2, 3, 4]
@@ -98,7 +101,8 @@ Prelude> (1 : 2 : 3 : []) ++ 4 : []
 -- =============================
 -- Using ranges to construct lists
 -- =============================
--- There are several ways we can construct lists.  One of thesimplest is with ranges.
+-- There are several ways we can construct lists.  One of thesimplest is with
+-- ranges.
 {-
 Prelude> [1..10]
 [1,2,3,4,5,6,7,8,9,10]
@@ -209,6 +213,18 @@ myWords separator sentence = go sentence []
         go x xs
           | length x == 0 = xs
           | otherwise = go (getRest x) $ xs ++ [(getNext x)]
+
+myWords' :: Eq a =>  a -> [a] -> [[a]]
+myWords' separator sentence = go sentence []
+  where isSeparator char = char == separator
+        getNext = (takeWhile (not . isSeparator))
+        getAfterSeparator = dropWhile isSeparator
+        getRest = (dropWhile (not . isSeparator)) . (dropWhile isSeparator)
+        isFirstSeparator = isSeparator . head
+        go x xs
+          | length x == 0 = xs
+          | isFirstSeparator x = go (getAfterSeparator x) xs
+          | otherwise = go (getRest x) (xs ++ [(getNext x)])
 {-
 2. Next, write a function that takes a string and returns a list
    of strings, using newline separators to break up the string
@@ -220,4 +236,39 @@ myWords separator sentence = go sentence []
    and myLines using it.
 
 -- see `./poem-lines.hs` file for 2 and 3.
+-}
+
+-- =============================
+-- List comprehensions
+-- =============================
+{-
+- way to generate a new list from a list or lists
+- set comprehension in mathematics
+- Must have at least 1 list (called generator) from which 
+  the new list is generated
+
+[ x^2   |   x <- [1..10] ]
+  [ 1 ] [2]  [    3    ]
+
+1. This is the output function that will apply to the members
+    of the list we indicate.
+2. The pipe here designates the separation between the output
+    function and the input.
+3. This is the input set: a generator list and a variable that
+    represents the elements that will be drawn from that list.
+    This says, “from a list of numbers from 1-10, take (<-) each
+    element as an input to the output function.”
+In plain English, that list comprehension will produce a
+new list that includes the square of every number from 1 to 10:
+
+Prelude> [x^2 | x <- [1..10]]
+[1,4,9,16,25,36,49,64,81,100]
+
+Ways to vary what elements are drawn from the generator list(s):
+* Adding predicates
+  - List comprehensions can optionally take predicates that limit
+    the elements drawn from the generator list.
+  
+
+
 -}
