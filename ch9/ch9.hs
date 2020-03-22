@@ -196,5 +196,28 @@ Prelude> myWords "sheryl wants fun"
 ["wallfish", "wants", "fun"]
 -}
 
+myWords :: Eq a =>  a -> [a] -> [[a]]
+myWords separator sentence = go sentence []
+  -- if char passed is equal to separator
+  where isSeparator char = char == separator
+  -- get the next item to append
+        getNext = (takeWhile (not . isSeparator)) . (dropWhile isSeparator)
+  -- get the rest of the items not yet parsed
+        getRest = (dropWhile (not . isSeparator)) . (dropWhile isSeparator)
+  -- recursive drop and take
+  -- TODO:: separate getRest and getNext case
+        go x xs
+          | length x == 0 = xs
+          | otherwise = go (getRest x) $ xs ++ [(getNext x)]
+{-
+2. Next, write a function that takes a string and returns a list
+   of strings, using newline separators to break up the string
+   as in the following (your job is to fill in the undefined
+   function):
+3. Now let’s look at what those two functions have in common. 
+   Try writing a new function that parameterizes the character
+   you’re breaking the string argument on and rewrite myWords
+   and myLines using it.
 
-
+-- see `./poem-lines.hs` file for 2 and 3.
+-}
