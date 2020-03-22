@@ -244,7 +244,7 @@ myWords' separator sentence = go sentence []
 {-
 - way to generate a new list from a list or lists
 - set comprehension in mathematics
-- Must have at least 1 list (called generator) from which 
+- Must have at least 1 list (called `generator`) from which 
   the new list is generated
 
 [ x^2   |   x <- [1..10] ]
@@ -254,7 +254,7 @@ myWords' separator sentence = go sentence []
     of the list we indicate.
 2. The pipe here designates the separation between the output
     function and the input.
-3. This is the input set: a generator list and a variable that
+3. This is the input set: a `generator` list and a variable that
     represents the elements that will be drawn from that list.
     This says, “from a list of numbers from 1-10, take (<-) each
     element as an input to the output function.”
@@ -264,11 +264,114 @@ new list that includes the square of every number from 1 to 10:
 Prelude> [x^2 | x <- [1..10]]
 [1,4,9,16,25,36,49,64,81,100]
 
-Ways to vary what elements are drawn from the generator list(s):
+Ways to vary what elements are drawn from the `generator` list(s):
 * Adding predicates
   - List comprehensions can optionally take predicates that limit
-    the elements drawn from the generator list.
+    the elements drawn from the `generator` list.
+
+    Prelude> [x^2 | x <- [1..10], rem x 2 == 0]
+    [4,16,36,64,100]
+
+    Here we specify that only elements to take from the `generator`
+    are the one which when divided by 2 is equal to 0. (even)
+  - multiple `generators` are also possible. One thing to note is
+    that the right most `generator` will be exhausted first, then 
+    the second rightmost, and so on.
+
+    Prelude> [x^y | x <- [1..5], y <- [2, 3]]
+    [   1,  1,  4,  8,  9,  27,  16,  64,  25, 125 ]
+    -- 1^2 1^3 2^2 2^3 3^2 3^3  4^2  4^3  5^2  5^3
+
+    we can still put a condition on multiple generators:
+
+    
+    [x ^ y |
+     x <- [1..10],
+     y <- [2, 3],
+     x ^ y < 200]
+    -- [1,1,4,8,9,27,16,64,25,125,36,49,64,81,100]
+
+  - can also create a tuple list with it:
+    [(x, y) | x <- [1, 2, 3], y <- [6, 7]]
+    [(1,6),(1,7),(2,6),(2,7),(3,6),(3,7)]
   
-
-
+  - to use a result of list comprehension on another:
+    let mySqr = [x^2 | x <- [1..10]]
+    [(x, y) | x <- mySqr, y <- [1..3], x < 4] 
+    -- [(1,1),(1,2),(1,3)]
 -}
+
+-- =============================
+-- Exercises: Comprehend Thy Lists
+-- =============================
+{-
+  Take a look at the following functions, figure what you think
+  the output lists will be, and then run them in your REPL to
+  verify (note that you will need the `mySqrlist` from above in
+  scope to do this):
+-}
+
+mySqr = [x^2 | x <- [1..10]]
+
+ctl1 = [x | x <- mySqr, rem x 2 == 0] == [4,16,36,64,100]
+ctl2 = [(x, y) | x <- mySqr,
+  y <- mySqr,
+  x < 50,
+  y > 50]
+   ==
+    [(1,64),(1,81),(1,100),
+    (4,64),(4,81),(4,100),
+    (9,64),(9,81),(9,100),
+    (16,64),(16,81),(16,100),
+    (25,64),(25,81),(25,100),
+    (36,64),(36,81),(36,100),
+    (49,64),(49,81),(49,100)]
+
+ctl3 = take 5 [ (x, y) | x <- mySqr,
+  y <- mySqr,
+  x < 50,
+  y > 50 ] == [(1,64),(1,81),(1,100),(4,64),(4,81)]
+
+
+-- =============================
+-- List comprehensions with Strings
+-- =============================
+{-
+It’s worth remembering that strings are lists, so list comprehensions
+ can also be used with strings. We’re going to introducea standard
+ function called `elem` that tells you whether an element is in a list
+ or not.
+
+-- `elem` checks if a value is an element of a list
+elem 'a' "abracadabra"
+-- True
+elem 'a' "Julie"
+-- False
+-}
+-- list comprehension to remove all the lowercase letters from a string.
+acro xs = [x | x <- xs, elem x ['A'..'Z'] ]
+
+
+-- =============================
+-- Exercises: Square Cube
+-- =============================
+-- Given the above, what do you think this function would do:
+-- A: returns all vowels in the string
+myString xs = [x | x <- xs, elem x "aeiou"]
+
+-- Given the following:
+mySqr2 = [x^2 | x <- [1..5]]
+myCube = [y^3 | y <- [1..5]]
+-- 1. First write an expression that will make tuples of the outputs of
+--    mySqr and myCube.
+-- 2. Now alter that expression so that it only uses the x and y
+--    values that are less than 50.
+-- 3. Apply another function to that list comprehension to determine
+--    how many tuples inhabit your output list.
+
+esc1 = [(x, y) | x <- mySqr2, y <- myCube, x < 50, y < 50]
+esc2 = length esc1
+
+-- =============================
+-- Spines and nonstrict evaluation
+-- =============================
