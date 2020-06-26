@@ -375,3 +375,60 @@ esc2 = length esc1
 -- =============================
 -- Spines and nonstrict evaluation
 -- =============================
+
+{- ============ 
+  Exercises: Filtering
+=============-}
+{-
+1. Given the above, how might we write a filter function that
+   would give us all the multiples of 3 out of a list from 1-30?
+-}
+filter3 :: [Integer] -> [Integer]
+filter3 = filter (\x -> rem x 3 == 0)
+
+a1 = filter3 [1..30]
+{-
+2. Recalling what we learned about function composition,
+   how could we compose the above function with the length
+   function to tell us *how many* multiples of 3 there are
+   between 1 and 30?
+-}
+filter3Length :: [Integer] -> Int
+filter3Length = length . filter3
+a2 = filter3Length [1..30]
+
+{-
+3.Next we’re going to work on removing all articles (’the’, ’a’,
+and ’an’) from sentences. You want to get to something
+that works like this:
+Prelude> myFilter "the brown dog was a goof"
+["brown","dog","was","goof"]
+
+You can use `words`
+-}
+isNotArticle :: String -> Bool
+isNotArticle = not . (flip elem) ["the", "a", "an"]
+removeArticle :: String -> [String]
+removeArticle = filter isNotArticle . words
+
+
+{- ============ 
+  Exercises: Zipping
+=============-}
+{- 1. Write your own version of zip and ensure it behaves the
+same as the original.
+zip :: [a] -> [b] -> [(a, b)]
+zip = undefined
+-}
+myZip _ [] = []
+myZip [] _ = []
+myZip (x: xs) (y: ys) = (x, y) : myZip xs ys
+{- 2. Do what you did for zip, but now for zipWith:
+zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith = undefined
+-}
+myZipWith _ _ [] = []
+myZipWith _ [] _ = []
+myZipWith f (x: xs) (y: ys) = f x y : myZipWith f xs ys
+{- 3. Rewrite yourzipin terms of thezipWithyou wrote. -}
+myZip' = myZipWith \x -> \y -> (x, y)
