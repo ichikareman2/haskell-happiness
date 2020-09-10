@@ -365,10 +365,13 @@ Prelude> myMaximumBy (\_ _ -> LT) [1..10]
 10
 Prelude> myMaximumBy compare [1..10] 10
 -}
--- myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
--- myMaximumBy _ [] = 
--- myMaximumBy f (x:xs) = 
-
+myMax f a b = if (f a b) == GT then a else b
+myMaximumBy1 :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy1 _ [] = undefined
+myMaximumBy1 f (x:[]) = x
+myMaximumBy1 f (x:xs) = myMax f x (myMaximumBy1 f xs)
+myMaximumBy2 :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy2 f (x:xs) = foldr (myMax f) x xs
 {-
 11. myMinimumBy takes a comparison function and a list and
 returns the least element of the list based on the last value
@@ -382,3 +385,10 @@ Prelude> myMinimumBy (\_ _ -> LT) [1..10]
 Prelude> myMinimumBy compare [1..10]
 1
 -}
+myMin f a b = if (f a b) == LT then a else b
+myMinimumBy1 :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy1 _ [] = undefined
+myMinimumBy1 f (x:[]) = x
+myMinimumBy1 f (x:xs) = myMin f x (myMinimumBy1 f xs)
+myMinimumBy2 :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy2 f (x:xs) = foldr (myMin f) x xs

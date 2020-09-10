@@ -177,7 +177,8 @@ squishAgain = squishMap id
 myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
 myMaximumBy _ [] = undefined
 myMaximumBy f (x:[]) = x
-myMaximumBy f (x:xs) = if (f x (myMaximumBy f xs)) == GT then x else (myMaximumBy f xs)
+myMaximumBy f (x:xs) = myMax x (myMaximumBy f xs)
+                      where  myMax a b = if (f a b) == GT then a else b 
 {-
 9. myMinimumBy takes a comparison function and a list and
   returns the least element of the list based on the last value
@@ -192,7 +193,8 @@ myMaximumBy f (x:xs) = if (f x (myMaximumBy f xs)) == GT then x else (myMaximumB
 myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
 myMinimumBy _ [] = undefined
 myMinimumBy f (x:[]) = x
-myMinimumBy f (x:xs) = if (f x (myMaximumBy f xs)) == LT then x else (myMaximumBy f xs)
+myMinimumBy f (x:xs) = myMin x (myMinimumBy f xs)
+                      where  myMin a b = if (f a b) == LT then a else b 
 
 {-
 10. Using the myMinimumBy and myMaximumBy functions, write your
