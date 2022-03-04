@@ -8,10 +8,12 @@
 * `:t` | `:type`    - find out type of value, expression, function
 * `import GHC.Int`  - imports Int to ghci
 * `` | `` - 
+
 # Quick basic syntax
 * `::`    - way to write type signature. ex:
 * `$`     - allow everything on the right to evaluate first.
 * `(+1)`  - sectioning. allow to pass around partially applied fn.
+* `->`    - type constructor for function
 * `do`    - special syntax that allows sequencing actions
 ```haskell
 main :: IO()
@@ -71,14 +73,34 @@ data Bool = False | True
 ```haskell
 type Name = String
 ```
+* defining module
+```haskell
+module ModuleName where
+-- module
 
-# list
+import Data.Aeson (encode)
+-- only import function `encode` 
+import Database.Persist
+-- import everything from Database.Persist
+```
+* Writing typeclass instance
+```haskell
+-- using `deriving`
+data Trivial = Trivial deriving Eq
+-- write own typeclass instance
+data Trivial = Trivial'
+instance Eq Trivial where
+  Trivial' == Trivial' = True
+```
+
+
+# List
 * `[a]` polymorphic list.
 
-# miscellaneous
+# Miscellaneous
 * `not :: Bool -> Bool` - negates `Bool`
 
-# terms
+# Terms
 * arity - number of arguments a function accepts.
 * parametrically polymorphic function
   * works for a value of any type
@@ -89,3 +111,8 @@ type Name = String
   isEqual x y = x == y
   -- accepts paramters that have instance of Eq typeclass
   ```
+* ad-hoc polymorphism - applies typeclass constraint
+```haskell
+(+) :: Num a => a -> a -> a
+-- applied Num constraint to type variable
+```
