@@ -6,14 +6,17 @@
 * `:l` | `:load`    - load file ex: `:load test.hs`
 * `:m` | `:module`  - return to Prelude, unloads loaded file
 * `:t` | `:type`    - find out type of value, expression, function
+* `:s` | `:set`     - set REPL flag `:set -Wall`
 * `import GHC.Int`  - imports Int to ghci
 * `` | `` - 
 
-# Quick basic syntax
+# Quick basic syntax explanation
 * `::`    - way to write type signature. ex:
 * `$`     - allow everything on the right to evaluate first.
 * `(+1)`  - sectioning. allow to pass around partially applied fn.
 * `->`    - type constructor for function
+
+# Snippets of how to write some usual code
 * `do`    - special syntax that allows sequencing actions
 ```haskell
 main :: IO()
@@ -91,6 +94,15 @@ data Trivial = Trivial deriving Eq
 data Trivial = Trivial'
 instance Eq Trivial where
   Trivial' == Trivial' = True
+-- for type with polymorphic parameter
+data Identity a = Identity a
+instance Eq a => (Identity a) where
+  (==) (Identity v) (Identity v') = v == v'
+-- typeclass itself
+class (Real a, Enum a) => Integral a where
+  quot :: a -> a -> a
+  rem :: a -> a -> a
+  -- ...
 ```
 
 
@@ -99,6 +111,7 @@ instance Eq Trivial where
 
 # Miscellaneous
 * `not :: Bool -> Bool` - negates `Bool`
+* `:set -Wall` - so the compiler outputs some helpful error especially for partial function
 
 # Terms
 * arity - number of arguments a function accepts.
@@ -115,4 +128,15 @@ instance Eq Trivial where
 ```haskell
 (+) :: Num a => a -> a -> a
 -- applied Num constraint to type variable
+```
+* partial function - one that doesn't handle all possible cases like in typeclasses Eq implementation or functions
+```haskell
+data Test = Test1 | Test2
+instance Eq Test where
+  Test1 == Test1 = True
+  Test2 == Test2 = True
+-- does not handle all others like Test1 == Test2
+f :: Int -> Bool
+f 2 = True
+-- does not handle other numbers aside 2
 ```
