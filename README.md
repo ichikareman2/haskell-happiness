@@ -7,7 +7,9 @@
 * `:m` | `:module`  - return to Prelude, unloads loaded file
 * `:t` | `:type`    - find out type of value, expression, function
 * `:s` | `:set`     - set REPL flag `:set -Wall`
-* `import GHC.Int`  - imports Int to ghci
+* `import GHC.Int`  - imports Int to GHCi
+* `:{ ... }:`       - block syntax in GHCi
+* `:browse`         - list of loaded types and functions. can enter with module.
 * `` | `` - 
 
 # Quick basic syntax explanation
@@ -17,6 +19,56 @@
 * `->`    - type constructor for function
 
 # Snippets of how to write some usual code
+* function composition, pipe
+```haskell
+-- (.) :: (b -> c) -> (a -> b) -> a -> c
+
+let f x = negate . sum $ x
+-- point free
+let f' = negate . sum
+-- f . g = \x -> f
+```
+* guard
+```haskell
+myAbs :: Integer -> Integer
+myAbs x
+  | x < 0       = (-x)
+  | otherwise   = x
+```
+* case expression
+```haskell
+f x =
+  case x + 1 == 1 of
+    True -> "awesome"
+    False -> "wut"
+```
+* if then else
+```haskell
+if x + 1 === 1 then "awesome" else "wut"
+```
+* `newtype`
+```haskell
+newtype Username = Username String
+```
+* function pattern matching
+```haskell
+-- simple data types 1
+isItTwo :: Integer -> Bool
+isItTwo 2 = True
+isItTwo _ = False
+-- simple data types 2
+f :: (a, b) -> (c, d) -> ((b, d), (a, c))
+f (a,b) (c,d) = ((b, d), (a, c))
+-- on custom data types
+newtype Username = Username String
+newtype AccountNumber = AccountNumber Integer
+data User = UnregisteredUser | RegisteredUser Username AccontNumber
+
+printUser :: User -> IO ()
+printUser UnregisteredUser = putStrln "Unregistered"
+printUser (RegisteredUser (Username name) (AccountNumber accNum)) =
+  putStrLn $ name ++ " " ++ show accNum
+```
 * `do`    - special syntax that allows sequencing actions
 ```haskell
 main :: IO()
@@ -110,10 +162,13 @@ class (Real a, Enum a) => Integral a where
 * `[a]` polymorphic list.
 
 # Miscellaneous
+* `print` - accepts types with `Show` instance which is for human readable output
+* `flip` - flip parameters of function
 * `not :: Bool -> Bool` - negates `Bool`
 * `:set -Wall` - so the compiler outputs some helpful error especially for partial function
 
 # Terms
+* Bottom - when incomplete pattern matching is called, unhandled cases return bottom. a non value that means cannot return value.
 * arity - number of arguments a function accepts.
 * parametrically polymorphic function
   * works for a value of any type
@@ -140,3 +195,10 @@ f :: Int -> Bool
 f 2 = True
 -- does not handle other numbers aside 2
 ```
+
+# Current Affairs
+* reread current chapter: 8
+* current chapter 14
+
+# english vocabulary
+* salient - most noticeable or important. pointing outward.
