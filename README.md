@@ -148,7 +148,7 @@ instance Eq Trivial where
   Trivial' == Trivial' = True
 -- for type with polymorphic parameter
 data Identity a = Identity a
-instance Eq a => (Identity a) where
+instance Eq a => Eq (Identity a) where
   (==) (Identity v) (Identity v') = v == v'
 -- typeclass itself
 class (Real a, Enum a) => Integral a where
