@@ -8,6 +8,10 @@ main = hspec $ do
       (Only (Sum 2)) == (mappend (Only (Sum 1)) (Only (Sum 1)))
     it "returns Only Product 8 for (Only Product 4) and (Only Product 2)" $ do
       (Only (Product 8)) == (Only (Product 4)) `mappend` (Only (Product 2))
-    -- it "returns Only Sum 1 for (Only Sum 1) and (Nada)" $ do
-    --   ()
+    it "returns Only Sum 1 for (Only Sum 1) and (Nada)" $ do
+      (Only (Sum 1)) == (Only (Sum 1)) `mappend` (Nada)
+    it "returns Only [1] for (Only [1]) and (Nada)" $ do
+      (Only [1]) == (Only [1]) `mappend` (Nada)
+    it "returns Only Sum 1 for Nada and (Only Sum 1)" $ do
+      (Only (Sum 1)) == (Nada) `mappend` (Only (Sum 1))
 
